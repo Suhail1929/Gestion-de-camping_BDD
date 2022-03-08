@@ -1,0 +1,171 @@
+CREATE TABLE Responsable_(
+   Id_Responsable_ INT AUTO_INCREMENT,
+   NomResponsable VARCHAR(50) ,
+   PrenomResponsable VARCHAR(50) ,
+   EmailResponsable VARCHAR(50) ,
+   NumTelResponsable INT,
+   PRIMARY KEY(Id_Responsable_)
+);
+
+CREATE TABLE Employe(
+   Id_Employe INT AUTO_INCREMENT,
+   NomEmploye VARCHAR(50) ,
+   PrenomEmploye VARCHAR(50) ,
+   PRIMARY KEY(Id_Employe)
+);
+
+CREATE TABLE Emplacement(
+   Id_Emplacement INT AUTO_INCREMENT,
+   Taille_ VARCHAR(50) ,
+   Niveaudeconfort VARCHAR(50) ,
+   NumEmplacement INT,
+   PRIMARY KEY(Id_Emplacement)
+);
+
+CREATE TABLE EquipementsOfferts(
+   Id_EquipementsOfferts INT AUTO_INCREMENT,
+   NomEquipement VARCHAR(50) ,
+   PRIMARY KEY(Id_EquipementsOfferts)
+);
+
+CREATE TABLE Branchement_électrique(
+   Id_Branchement_électrique INT AUTO_INCREMENT,
+   PRIMARY KEY(Id_Branchement_électrique)
+);
+
+CREATE TABLE ConnexionInternet(
+   Id_ConnexionInternet INT AUTO_INCREMENT,
+   Debit INT,
+   PRIMARY KEY(Id_ConnexionInternet)
+);
+
+CREATE TABLE Seance(
+   Id_Seance INT AUTO_INCREMENT,
+   DateSeance DATETIME,
+   PrixSeance DOUBLE,
+   PRIMARY KEY(Id_Seance)
+);
+
+CREATE TABLE Animateur(
+   Id_Animateur INT AUTO_INCREMENT,
+   NomAnimateur VARCHAR(50) ,
+   PrenomAnimateur VARCHAR(50) ,
+   PRIMARY KEY(Id_Animateur)
+);
+
+CREATE TABLE Diplome(
+   Id_Diplome INT AUTO_INCREMENT,
+   DateObtention DATE,
+   Id_Animateur INT NOT NULL,
+   PRIMARY KEY(Id_Diplome),
+   FOREIGN KEY(Id_Animateur) REFERENCES Animateur(Id_Animateur)
+);
+
+CREATE TABLE Activite(
+   Id_Activite INT AUTO_INCREMENT,
+   TypeActivite VARCHAR(50) ,
+   PRIMARY KEY(Id_Activite)
+);
+
+CREATE TABLE Client(
+   Id_Client INT AUTO_INCREMENT,
+   NomClient VARCHAR(50) ,
+   PrenomClient VARCHAR(50) ,
+   AdresseClient VARCHAR(50) ,
+   DateDeNaissanceClient VARCHAR(50) ,
+   EmailClient VARCHAR(100) ,
+   NumTelClient INT,
+   Id_ConnexionInternet INT,
+   Id_Emplacement INT NOT NULL,
+   Id_Responsable_ INT,
+   PRIMARY KEY(Id_Client),
+   FOREIGN KEY(Id_ConnexionInternet) REFERENCES ConnexionInternet(Id_ConnexionInternet),
+   FOREIGN KEY(Id_Emplacement) REFERENCES Emplacement(Id_Emplacement),
+   FOREIGN KEY(Id_Responsable_) REFERENCES Responsable_(Id_Responsable_)
+);
+
+CREATE TABLE Reservation(
+   Id_Reservation INT AUTO_INCREMENT,
+   DateArrivee DATETIME,
+   DateDepart DATETIME,
+   PrixReservation DOUBLE,
+   Id_Client INT NOT NULL,
+   PRIMARY KEY(Id_Reservation),
+   FOREIGN KEY(Id_Client) REFERENCES Client(Id_Client)
+);
+
+CREATE TABLE accompagnant(
+   Id_accompagnant INT AUTO_INCREMENT,
+   NomAcc VARCHAR(50) ,
+   PrenomAcc VARCHAR(50) ,
+   NumTelAcc INT,
+   Id_Client INT NOT NULL,
+   PRIMARY KEY(Id_accompagnant),
+   FOREIGN KEY(Id_Client) REFERENCES Client(Id_Client)
+);
+
+CREATE TABLE aider(
+   Id_Employe INT,
+   Id_Client INT,
+   PRIMARY KEY(Id_Employe, Id_Client),
+   FOREIGN KEY(Id_Employe) REFERENCES Employe(Id_Employe),
+   FOREIGN KEY(Id_Client) REFERENCES Client(Id_Client)
+);
+
+CREATE TABLE apporter(
+   Id_Employe INT,
+   Id_EquipementsOfferts INT,
+   PRIMARY KEY(Id_Employe, Id_EquipementsOfferts),
+   FOREIGN KEY(Id_Employe) REFERENCES Employe(Id_Employe),
+   FOREIGN KEY(Id_EquipementsOfferts) REFERENCES EquipementsOfferts(Id_EquipementsOfferts)
+);
+
+CREATE TABLE instaler(
+   Id_Employe INT,
+   Id_Branchement_électrique INT,
+   PRIMARY KEY(Id_Employe, Id_Branchement_électrique),
+   FOREIGN KEY(Id_Employe) REFERENCES Employe(Id_Employe),
+   FOREIGN KEY(Id_Branchement_électrique) REFERENCES Branchement_électrique(Id_Branchement_électrique)
+);
+
+CREATE TABLE encadrer(
+   Id_Seance INT,
+   Id_Animateur INT,
+   PRIMARY KEY(Id_Seance, Id_Animateur),
+   FOREIGN KEY(Id_Seance) REFERENCES Seance(Id_Seance),
+   FOREIGN KEY(Id_Animateur) REFERENCES Animateur(Id_Animateur)
+);
+
+CREATE TABLE faire_l_entretien(
+   Id_Employe INT,
+   Id_Emplacement INT,
+   PRIMARY KEY(Id_Employe, Id_Emplacement),
+   FOREIGN KEY(Id_Employe) REFERENCES Employe(Id_Employe),
+   FOREIGN KEY(Id_Emplacement) REFERENCES Emplacement(Id_Emplacement)
+);
+
+CREATE TABLE participer(
+   Id_Client INT,
+   Id_Seance INT,
+   Id_accompagnant INT,
+   PRIMARY KEY(Id_Client, Id_Seance, Id_accompagnant),
+   FOREIGN KEY(Id_Client) REFERENCES Client(Id_Client),
+   FOREIGN KEY(Id_Seance) REFERENCES Seance(Id_Seance),
+   FOREIGN KEY(Id_accompagnant) REFERENCES accompagnant(Id_accompagnant)
+);
+
+CREATE TABLE utiliser(
+   Id_Client INT,
+   Id_EquipementsOfferts INT,
+   PRIMARY KEY(Id_Client, Id_EquipementsOfferts),
+   FOREIGN KEY(Id_Client) REFERENCES Client(Id_Client),
+   FOREIGN KEY(Id_EquipementsOfferts) REFERENCES EquipementsOfferts(Id_EquipementsOfferts)
+);
+
+CREATE TABLE Etre_pratiquer(
+   Id_Seance INT,
+   Id_Activite INT,
+   PRIMARY KEY(Id_Seance, Id_Activite),
+   FOREIGN KEY(Id_Seance) REFERENCES Seance(Id_Seance),
+   FOREIGN KEY(Id_Activite) REFERENCES Activite(Id_Activite)
+);
